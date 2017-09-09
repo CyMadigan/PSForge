@@ -10,6 +10,7 @@ InModuleScope PSForge {
         Mock Pop-Location {}
         Mock BootstrapDSCModule {}
         Mock Invoke-ExternalCommand {}
+        Mock Invoke-ExternalCommandRealtime {}
         Mock updateBundle {}
         Mock Invoke-Paket {}
         Mock Read-Host {}
@@ -40,12 +41,12 @@ InModuleScope PSForge {
 
         it "Should pass the correct argument to Test Kitchen by default" {
             Test-DSCModule
-            Assert-MockCalled Invoke-ExternalCommand -ParameterFilter { $Command -eq "bundle" -and (Compare-Array $Arguments @("exec", "kitchen", "verify")) } -Scope It
+            Assert-MockCalled Invoke-ExternalCommandRealtime -ParameterFilter { $Command -eq "bundle" -and  (Compare-Array $Arguments @("exec", "kitchen", "verify")) } -Scope It
         }
 
         it "Should pass the correct argument to Test Kitchen if different action is specified" {
             Test-DSCModule converge
-            Assert-MockCalled Invoke-ExternalCommand -ParameterFilter { $Command -eq "bundle" -and (Compare-Array $Arguments @("exec", "kitchen", "converge")) } -Scope It
+            Assert-MockCalled Invoke-ExternalCommandRealtime -ParameterFilter { $Command -eq "bundle" -and  (Compare-Array $Arguments @("exec", "kitchen", "converge")) } -Scope It
         }
 
         it "Should throw an exception if invalid action is specified" {
@@ -54,7 +55,7 @@ InModuleScope PSForge {
 
         it "Should pass the correct argument to Test Kitchen if -Debug is used" {
             Test-DSCModule -Debug
-            Assert-MockCalled Invoke-ExternalCommand -ParameterFilter { $Command -eq "bundle" -and (Compare-Array $Arguments @("exec", "kitchen", "verify", "--log-level","Debug")) } -Scope It
+            Assert-MockCalled Invoke-ExternalCommandRealtime -ParameterFilter { $Command -eq "bundle" -and (Compare-Array $Arguments @("exec", "kitchen", "verify", "--log-level","Debug")) } -Scope It
         }
     }
 }
