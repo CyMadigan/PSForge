@@ -5,6 +5,13 @@ InModuleScope PSForge {
         
         . $PSScriptRoot\PesterHelpers.ps1
 
+        $fakeAzureCredentials = @'
+[88df33b9-3d6f-400c-8710-286c92201693]
+client_id = "e39eb0ee-9347-487e-a5d2-a7a49628bd29"
+client_secret = "ix8xyzc7"
+tenant_id = "eaecf0d8-a78a-45b6-a9b1-393398fb1e1a"
+'@
+
         Mock getProjectRoot { "/fake-path"}
         Mock Push-Location {}
         Mock Pop-Location {}
@@ -14,6 +21,8 @@ InModuleScope PSForge {
         Mock updateBundle {}
         Mock Invoke-Paket {}
         Mock Read-Host {}
+        Mock Get-Content { $fakeAzureCredentials } -ParameterFilter { $Path -eq "$HOME/.azure/credentials" }
+
        
         it "Should throw an exception if the credentials file is missing" {
             Mock Test-Path { $False } -ParameterFilter { $Path -eq "$HOME/.azure/credentials" }
