@@ -22,7 +22,7 @@ tenant_id = "eaecf0d8-a78a-45b6-a9b1-393398fb1e1a"
         Mock Invoke-Paket {}
         Mock Read-Host {}
         Mock Get-Content { $fakeAzureCredentials } -ParameterFilter { $Path -eq "$HOME/.azure/credentials" }
-
+        Mock Invoke-ScriptAnalyzer {}
        
         it "Should throw an exception if the credentials file is missing" {
             Mock Test-Path { $False } -ParameterFilter { $Path -eq "$HOME/.azure/credentials" }
@@ -66,5 +66,19 @@ tenant_id = "eaecf0d8-a78a-45b6-a9b1-393398fb1e1a"
             Test-DSCModule -Debug
             Assert-MockCalled Invoke-ExternalCommandRealtime -ParameterFilter { $Command -eq "bundle" -and (Compare-Array $Arguments @("exec", "kitchen", "verify", "--log-level","Debug")) } -Scope It
         }
+
+        it "Should run PSScriptAnalyzer on Windows" {
+            Mock isWindows { $true }
+            Test-DSCModule converge
+            Assert-MockCalled Invoke-ScriptAnalyzer -ParameterFilter { $Path -eq ".\DSCResources" -and $Recurse -eq $True -and $Settings -eq "${PWD}\PSScriptAnalyzerSettings.psd1" } -Exactly 1 -Scope It
+        }        
+        
+        it "Should not run PSScriptAnalyzer on Unix" {
+            Mock isWindows { $false }
+            Test-DSCModule converge
+            Assert-MockCalled Invoke-ScriptAnalyzer  -Exactly 0 -Scope It
+        }
+
+        
     }
 }
