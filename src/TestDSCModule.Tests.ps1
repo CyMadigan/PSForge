@@ -80,7 +80,9 @@ tenant_id = "eaecf0d8-a78a-45b6-a9b1-393398fb1e1a"
         }
 
         it "Should be able to override PSScriptAnalyzer with a switch " {
-            $True | Should be $False
+            Mock isWindows { $true }
+            Test-DSCModule converge -SkipScriptAnalyzer
+            Assert-MockCalled Invoke-ScriptAnalyzer  -Exactly 0 -Scope It
         }      
 
         
