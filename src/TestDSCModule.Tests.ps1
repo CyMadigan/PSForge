@@ -70,7 +70,7 @@ tenant_id = "eaecf0d8-a78a-45b6-a9b1-393398fb1e1a"
         it "Should run PSScriptAnalyzer on Windows" {
             Mock isWindows { $true }
             Test-DSCModule converge
-            Assert-MockCalled Invoke-ScriptAnalyzer -ParameterFilter { $Path -eq ".\DSCResources" -and $Recurse -eq $True -and $Settings -eq "${PWD}\PSScriptAnalyzerSettings.psd1" } -Exactly 1 -Scope It
+            Assert-MockCalled Invoke-ScriptAnalyzer -ParameterFilter { $Path -eq ".\DSCResources" -and $Recurse -eq $True } -Exactly 1 -Scope It
         }        
         
         it "Should not run PSScriptAnalyzer on Unix" {
