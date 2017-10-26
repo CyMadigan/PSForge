@@ -23,6 +23,7 @@ tenant_id = "eaecf0d8-a78a-45b6-a9b1-393398fb1e1a"
         Mock Read-Host {}
         Mock Get-Content { $fakeAzureCredentials } -ParameterFilter { $Path -eq "$HOME/.azure/credentials" }
         Mock Invoke-ScriptAnalyzer {}
+        Mock Invoke-Pester {}
        
         it "Should throw an exception if the credentials file is missing" {
             Mock Test-Path { $False } -ParameterFilter { $Path -eq "$HOME/.azure/credentials" }
