@@ -1,5 +1,3 @@
-
-
 InModuleScope PSForge {
     Describe "Test-DSCModule" {
         
@@ -84,8 +82,30 @@ tenant_id = "eaecf0d8-a78a-45b6-a9b1-393398fb1e1a"
             Mock isWindows { $true }
             Test-DSCModule converge -SkipScriptAnalyzer
             Assert-MockCalled Invoke-ScriptAnalyzer  -Exactly 0 -Scope It
-        }      
+        }
 
-        
+        $kitchenCommands = @(
+          @{ command = "login"}
+          @{ command = "destroy"}
+        )
+  
+        It "Should not run unit tests if running 'kitchen <command>'" -TestCases $kitchenCommands {
+            param ($command)
+            Test-DSCModule -Action $command
+            Assert-MockCalled Invoke-ScriptAnalyzer -Exactly 0 -Scope It
+        }
+
+        It "Should not run unit tests if running 'kitchen <command>'" -TestCases $kitchenCommands {
+            param ($command)
+            Test-DSCModule -Action $command
+            Assert-MockCalled Invoke-Pester -Exactly 0 -Scope It
+        }
+
+        It "Should not run invoke paket if running 'kitchen <command>'" -TestCases $kitchenCommands {
+          param ($command)
+          Test-DSCModule -Action $command
+          Assert-MockCalled Invoke-Paket -Exactly 0 -Scope It
+      }
+
     }
 }
